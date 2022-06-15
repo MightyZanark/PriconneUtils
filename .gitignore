@@ -1,2 +1,4 @@
 
-master.db
+__pycache__/
+database/
+l2d/
