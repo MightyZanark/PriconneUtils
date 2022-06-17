@@ -5,10 +5,9 @@ max_test = 20
 test_multi = 10
 conf = r'.\config.json'
 db_dir = r'.\database'
-# manifest_iter = {'db': 'master.db', 'movie': 'moviemanifest', 'sound': 'soundmanifest'}
 
 def update_db():
-    #Checks if database folder exist, if it doesn't then create one
+    # Checks if database folder exist, if it doesn't then create one
     if not os.path.isdir(db_dir):
         os.mkdir(db_dir)
 
@@ -19,7 +18,7 @@ def update_db():
         assetmanifest = str(c["assetmanifest"])
         i = 1
 
-        #While loop to check for new versions
+        # While loop to check for new versions
         while i <= max_test:
             guess = version + (i * test_multi)
             r = requests.get(assetmanifest.replace('version', str(guess)))
@@ -28,14 +27,13 @@ def update_db():
                 version = guess
                 i = 1
             else:
-                # print(f'[{guess}] is not valid')
                 i += 1
         
-        #Checks if the TruthVersion is the same as in the latest_ver.json
+        # Checks if the TruthVersion is the same as in the latest_ver.json
         if version == int(c["TruthVersion"]):
             
-            #Checks if master.db or manifests file exist. If it doesn't, then download them
-            #If anyone has a better way to approach this, you can do a pull request or make a suggestion from the "Issues" tab
+            # Checks if master.db or manifests file exist. If it doesn't, then download them
+            # If anyone has a better way to approach this, you can do a pull request or make a suggestion from the "Issues" tab
             while True:
                 if not os.path.isfile(f'{db_dir}\\master.db'):
                     print(f'No database file detected, downloading the latest: [{version}]')
@@ -51,7 +49,7 @@ def update_db():
                     break
 
         else:
-            #Updates config.json
+            # Updates config.json
             r = requests.get(str(c["masterdata"]).replace('version', str(version))).content
             l = str(r).split(',')
             hash = l[1]
@@ -60,14 +58,14 @@ def update_db():
             j.seek(0)
             json.dump(c, j, indent=1)
 
-            #Downloads the new database alongside manifests
+            # Downloads the new database alongside manifests
             print(f'New version available: [{version}], updating database...')
             download_manifest('db')
             download_manifest('sound')
             download_manifest('movie')
             print("> Update completed!")
 
-#Downloads .db and sound/movie manifest to use for L2D, BGM extraction, etc.
+# Downloads .db and sound/movie manifest to use for L2D, BGM extraction, etc.
 def download_manifest(type):
     with open(conf, 'r') as f:
         data = json.load(f)
