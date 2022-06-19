@@ -11,7 +11,7 @@ def main():
     if str(ans).lower().strip() == 'dbcheck':
         print("'DBCheck' option chosen, checking and updating DB...\n")
         update_db()
-        input("All task is done!\nPress ENTER to exit this window")
+        input("\nAll task is done!\nPress ENTER to exit this window")
     
     elif str(ans).lower().strip() == 'movie':
         print("'Movie' option chosen")

@@ -67,10 +67,10 @@ def convert_file(name):
             os.system(f'UsmToolkit convert -c "{name}" -o "{os.path.dirname(name)}"')
     
         else:
-            print(f'File {str(name).split(".")[1]}.mp4 already exists')
+            print(f'File [.\\{str(name).split(".")[1]}.mp4] already exists')
     
-    except:
-        print("File not found")
+    except Exception as e:
+        print(f'An ERROR occured\n{e}')
 
 
 # Main function to run
@@ -90,17 +90,18 @@ def main():
             # ThreadPoolExecutor and multiprocessing makes it so the downloading and converting of a file doesn't happen 1 by 1
             # Instead, a few files are downloaded at a time and after all of those files finished downloading, they get
             # converted a few files at the same time as well
-            # The number of files downloaded or converted at a time will depend on the strenght of your system
+            # The number of files downloaded or converted at a time will depend on your system and download speed (for download)
             with ThreadPoolExecutor() as thread:
                 thread.map(download_file, name, hash)
                 thread.shutdown(wait=True)
 
             with multiprocessing.Pool() as pool:
                 pool.map(convert_file, name)
+                pool.terminate()
 
-            input(">> Downloading and conversion completed!\nPress ENTER to exit this window")
+            input(">> Download and conversion completed!\nPress ENTER to exit this window")
 
-        except Exception as e:
+        except:
             print("> INVALID TYPE! <\nCurrent types are only 'cutin', 'l2d', or 'summon'\n")
             input("Press ENTER to exit this window")
         
