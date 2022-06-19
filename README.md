@@ -32,7 +32,9 @@ Note: If you don't already have FFmpeg installed, then you can just do it from U
 5. After you decided which one you want to edit, find the variable called `Path` (not `PATHEXT`), select it, and press `Edit` or double click it. That should open up yet another window.
 6. In that window, there should be all kinds of options like `New`, `Edit`, `Browse`, `Delete`, etc. To add Python and UsmToolkit to it, press `New`.
 7. Copy and paste the full path of Python and UsmToolkit, and by full path I meant something like this `C:\Users\user\AppData\Local\Programs\Python\Python39\`. At the end of it, you should have something along this line
+
 ![Image of completed path](./path.png)
+
 I have FFmpeg as a separate line because I already have FFmpeg installed way before I have UsmToolkit, but if you don't have both and you downloaded FFmpeg from UsmToolkit command, then you just need to have UsmToolkit in `Path` and it will work just fine.
 
 If this still wasn't clear, you can contact me through Discord from [Priconne Unofficial Server](https://discord.gg/priconne), if you're not from the server, chances are I will just ignore your DM/friend req. My tag is **MightyZanark#0138**.
