@@ -13,16 +13,21 @@ cutin_name = re.compile('cutin_\d+\.usm')
 summon_dir = r'.\movie\summon'
 summon_name = re.compile('character_\d+_000001\.usm')
 
+event_dir = r'.\movie\event'
+event_name = re.compile('story_5\d{5}[7-9]0[1-2]\.usm')
+
 mov = {
     'dir': {
         'cutin': cutin_dir,
         'l2d': l2d_dir,
-        'summon': summon_dir
+        'summon': summon_dir,
+        'event': event_dir
     },
     'name': {
         'cutin': cutin_name,
         'l2d': l2d_name,
-        'summon': summon_name
+        'summon': summon_name,
+        'event': event_name
     }
 }
 
@@ -36,6 +41,7 @@ def generate_list(mov_name: str, dir_name):
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)
 
+    # print(mov_name)
     with open(manifest_path, 'r') as m:
         for lines in m:
             l = lines.split(',')
@@ -50,6 +56,7 @@ def generate_list(mov_name: str, dir_name):
 
 # Downloads all video files that doesn't exist yet
 def download_file(name, hash):
+    # print(f'Filename is {name}')
     if not os.path.isfile(name) and not os.path.isfile(f'.\\{str(name).split(".")[1]}.mp4'):
         print(f'Downloading {name}...')
         r = requests.get(f'{movie_url}/{hash[:2]}/{hash}').content
@@ -66,8 +73,8 @@ def convert_file(name):
         if not os.path.isfile(f'.\\{str(name).split(".")[1]}.mp4'):
             os.system(f'UsmToolkit convert -c "{name}" -o "{os.path.dirname(name)}"')
     
-        else:
-            print(f'File [.\\{str(name).split(".")[1]}.mp4] already exists')
+        # else:
+        #     print(f'File [.\\{str(name).split(".")[1]}.mp4] already exists')
     
     except Exception as e:
         print(f'An ERROR occured\n{e}')
@@ -80,7 +87,7 @@ def main():
         input("Press ENTER to exit this window")
 
     else:
-        mov_type = input("Select type: 'cutin' 'l2d' 'summon'\n")
+        mov_type = input("Select type: 'cutin' 'l2d' 'summon' 'event'\n")
         
         try:
             dir_name = mov['dir'][mov_type.strip()]
@@ -102,7 +109,7 @@ def main():
             input(">> Download and conversion completed!\nPress ENTER to exit this window")
 
         except:
-            print("> INVALID TYPE! <\nCurrent types are only 'cutin', 'l2d', or 'summon'\n")
+            print("> INVALID TYPE! <\nCurrent types are only 'cutin', 'l2d', 'summon', or 'event'\n")
             input("Press ENTER to exit this window")
         
 

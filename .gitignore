@@ -3,3 +3,7 @@ __pycache__/
 database/
 movie/
 sound/
+Test.py
+dist/
+build/
+*.spec

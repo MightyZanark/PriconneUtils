@@ -6,7 +6,6 @@ sound_url = 'http://prd-priconne-redive.akamaized.net/dl/pool/Sound'
 
 bgm_dir = r'.\sound\bgm'
 bgm_name = re.compile('bgm_.+\.(acb||awb)')
-bgm_extracted_name = re.compile('bgm_.+\.m4a')
 
 sound = {
     'dir': {
@@ -14,9 +13,6 @@ sound = {
     },
     'name': {
         'bgm': bgm_name
-    },
-    'extracted': {
-        'bgm': bgm_extracted_name
     }
 }
 
@@ -40,14 +36,19 @@ def generate_list(snd_name, snd_dir):
 
 
 def download_file(name: str, hash):
-    if not os.path.isfile(name) and not os.path.isfile(f'.\\{name.split(".")[1]}.m4a'):
+    dirName = os.path.dirname(name)
+    realFileName = name.split('\\')[-1]
+    nameCheck = re.compile(f'{realFileName.split(".")[0]}.+?m4a')
+    checked = check_file(nameCheck, dirName)
+
+    if not os.path.isfile(name) and checked is None:
         print(f'Downloading {name}...')
         r = requests.get(f'{sound_url}/{hash[:2]}/{hash}').content
         with open(name, 'wb') as f:
             f.write(r)
 
-    else:
-        print(f'File {name} already exists')
+    # else:
+    #     print(f'File {name} already exists')
 
 def convert_file(name: str):
     dir_name = os.path.dirname(name)
@@ -57,7 +58,7 @@ def convert_file(name: str):
     acbInternal = os.path.join(acbUnpackDir, 'internal')
     acbExternal = os.path.join(acbUnpackDir, 'external')
     
-    nameCheck = re.compile(f'{realFilename.split(".")[0]}.+\.m4a')
+    nameCheck = re.compile(f'{realFilename.split(".")[0]}.+?m4a')
     checked = check_file(nameCheck, dir_name)
 
     if checked is None:
@@ -96,7 +97,7 @@ def convert_file(name: str):
 def check_file(fn, fd):
     for file in os.listdir(fd):
         a = re.search(fn, file)
-        if a is not None: 
+        if a: 
             return a.group()
 
 def main():
