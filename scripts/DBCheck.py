@@ -1,18 +1,14 @@
-import os, requests, json, asyncio
+import os, requests, json
+import Constants
 
-cur_dir = os.getcwd()
-max_test = 20
-test_multi = 10
-conf = r'.\config.json'
-db_dir = r'.\database'
-
-async def update_db():
+# Function to update the db if there is one
+def update_db():
     # Checks if database folder exist, if it doesn't then create one
-    if not os.path.isdir(db_dir):
-        os.mkdir(db_dir)
+    if not os.path.isdir(Constants.DB_DIR):
+        os.mkdir(Constants.DB_DIR)
 
     print('Checking for database updates...')
-    await check_update()
+    check_update()
 
     # Downloads the new database alongside manifests
     # print('Downloading database and manifests...')
@@ -23,7 +19,7 @@ async def update_db():
 
 # Downloads .db and sound/movie manifest to use for L2D, BGM extraction, etc.
 def download_manifest(type):
-    with open(conf, 'r') as f:
+    with open(Constants.CONFIG_FILE, 'r') as f:
         data = json.load(f)
         t = str(data[type])
         hash = data["hash"]
@@ -35,27 +31,28 @@ def download_manifest(type):
             database = requests.get(f'{t}/{hash[:2]}/{hash}').content
             with open('master.cdb', 'wb') as cdb:
                 cdb.write(database)
-            os.system(f'Coneshell_call.exe -cdb master.cdb "{db_dir}\\master.db"')
+            os.system(f'Coneshell_call.exe -cdb master.cdb "{Constants.DB_DIR}\\master.db"')
             os.remove('master.cdb')
             print("> Finished downloading database!\n")
 
         else:
             print(f'Downloading {manifest_name}...')
             manifest = requests.get(t.replace('version', ver)).content
-            with open(f'{db_dir}\\{manifest_name}', 'wb') as m:
+            with open(os.path.join(Constants.DB_DIR, manifest_name), 'wb') as m:
                 m.write(manifest)
             print("> Download completed!\n")
 
-async def check_update():
-    with open(conf, 'r+') as j:
+# Function to check for DB updates and to update config.json if there is an update
+def check_update():
+    with open(Constants.CONFIG_FILE, 'r+') as j:
         c = json.load(j)
         version = int(c["TruthVersion"])
         assetmanifest = str(c["assetmanifest"])
         i = 1
 
         # While loop to check for new versions
-        while i <= max_test:
-            guess = version + (i * test_multi)
+        while i <= Constants.MAX_TEST:
+            guess = version + (i * Constants.TEST_MULTIPLIER)
             r = requests.get(assetmanifest.replace('version', str(guess)))
             if r.status_code == 200:
                 print(f'[{guess}] is a valid new version. Checking for more...')
@@ -79,9 +76,8 @@ async def check_update():
             j.seek(0)
             json.dump(c, j, indent=1)
     
-    print('>> Update check completed!\n')
-    return
+    # print('>> Update check completed!\n')
 
 
-if __name__ == '__main__':
-    asyncio.run(update_db())
+# if __name__ == '__main__':
+#     update_db()

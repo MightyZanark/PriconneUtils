@@ -3,7 +3,11 @@ __pycache__/
 database/
 movie/
 sound/
-Test.py
 dist/
 build/
+
+Test.py
 *.spec
+Run.exe
+PriconneUtils.exe
+*.ico
