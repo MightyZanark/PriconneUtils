@@ -36,6 +36,8 @@ Note: If you don't already have FFmpeg installed, then you can just do it from U
 
 ![Image of completed path](./path.png)
 
+If for some reason, while running the script, something like `'UsmToolkit' (or acb2wavs) is not recognized as an internal or external command, operable program or batch file` appears, try adding an ending backlash ("\\") to the path (from `D:\libcgss-win-x86-vc14.2-0.3.7.89\bin\x86\Release` to `D:\libcgss-win-x86-vc14.2-0.3.7.89\bin\x86\Release\`)
+
 I have FFmpeg as a separate line because I already have FFmpeg installed way before I have UsmToolkit, but if you don't have both and you downloaded FFmpeg from UsmToolkit command, then you just need to have UsmToolkit in `Path` and it will work just fine.
 
 If this still wasn't clear, you can contact me through Discord from [Priconne Unofficial Server](https://discord.gg/priconne), if you're not from the server, chances are I will just ignore your DM/friend req. My tag is **MightyZanark#0138**.
