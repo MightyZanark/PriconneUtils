@@ -27,20 +27,27 @@ EVENT_DIR = os.path.join(MOVIE_DIR, 'event')
 EVENT_NAME = re.compile('story_5\d{5}[7-9]0[1-2]\.usm')
 
 STORY_DIR = os.path.join(MOVIE_DIR, 'story')
-STORY_NAME = re.compile('story_\d+_\d+.usm')
+STORY_NAME = re.compile('story_2\d+\.usm')
+
+NEW_CHARACTER_DIR = os.path.join(MOVIE_DIR, 'new_character')
+NEW_CHARACTER_NAME = re.compile('new_character_\d+\.usm')
 
 MOVIE_TYPES = {
     'dir': {
         'cutin': CUTIN_DIR,
         'l2d': L2D_DIR,
         'summon': SUMMON_DIR,
-        'event': EVENT_DIR
+        'event': EVENT_DIR,
+        'story': STORY_DIR,
+        'newchara': NEW_CHARACTER_DIR
     },
     'name': {
         'cutin': CUTIN_NAME,
         'l2d': L2D_NAME,
         'summon': SUMMON_NAME,
-        'event': EVENT_NAME
+        'event': EVENT_NAME,
+        'story': STORY_NAME,
+        'newchara': NEW_CHARACTER_NAME
     }
 }
 

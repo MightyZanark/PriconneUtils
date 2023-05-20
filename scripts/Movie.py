@@ -59,15 +59,16 @@ def movie():
         input("Press ENTER to continue")
 
     else:
-        mov_type = input("Select type: 'cutin' 'l2d' 'summon' 'event'\n")
+        mov_type = input("Select type: 'cutin' 'l2d' 'summon' 'event' 'story' 'newchara' \n")
         
         try:
             dir_name = Constants.MOVIE_TYPES['dir'][mov_type.strip()]
             mov_name = Constants.MOVIE_TYPES['name'][mov_type.strip()]
+            print("Check",dir_name, mov_name)
             generate_list(mov_name, dir_name)
 
         except:
-            print("> INVALID TYPE! <\nCurrent types are only 'cutin', 'l2d', 'summon', or 'event'\n")
+            print("> INVALID TYPE! <\nCurrent types are only 'cutin', 'l2d', 'summon', 'event' 'story' 'newchara'\n")
             input("Press ENTER to continue")
     
         else:
