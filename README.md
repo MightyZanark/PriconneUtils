@@ -52,3 +52,8 @@ pip install -r requirements.txt
 ```
 
 After installing those, you can just run the `build.bat` file under the scripts folder.
+
+
+## Acknowledgment
+
+Main code is highly inspired from [unity-texture-toolkit](https://github.com/esterTion/unity-texture-toolkit) by `esterTion` and all the endpoints used to grab the assets are from that repo as well, so big thanks to `esterTion` for making those available to the public.
