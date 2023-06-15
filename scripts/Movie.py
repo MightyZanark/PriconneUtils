@@ -169,28 +169,24 @@ def movie() -> None:
             input("Press ENTER to continue")
     
         else:
-            if mov_type in ["cutin", "l2d", "summon"]:
-                pass
+            # ThreadPoolExecutor and multiprocessing makes it so the 
+            # downloading and converting of a file doesn't happen 1 by 1
+            # Instead, a few files are downloaded at a time and after all 
+            # of those files finished downloading, they get converted a 
+            # few files at the same time as well
+            # The number of files downloaded or converted at a time will 
+            # depend on your system and download speed (for download)
+            with ThreadPoolExecutor() as thread:
+                thread.map(download_file, name, hash)
+                thread.shutdown(wait=True)
 
-            else:
-                # ThreadPoolExecutor and multiprocessing makes it so the 
-                # downloading and converting of a file doesn't happen 1 by 1
-                # Instead, a few files are downloaded at a time and after all 
-                # of those files finished downloading, they get converted a 
-                # few files at the same time as well
-                # The number of files downloaded or converted at a time will 
-                # depend on your system and download speed (for download)
-                with ThreadPoolExecutor() as thread:
-                    thread.map(download_file, name, hash)
-                    thread.shutdown(wait=True)
+            with multiprocessing.Pool() as pool:
+                pool.map(convert_file, name)
+                pool.terminate()
 
-                with multiprocessing.Pool() as pool:
-                    pool.map(convert_file, name)
-                    pool.terminate()
-
-            name.clear()
-            hash.clear()
-            input(">> Download and conversion completed!\nPress ENTER to continue")
+        name.clear()
+        hash.clear()
+        input(">> Download and conversion completed!\nPress ENTER to continue")
 
 
 if __name__ == "__main__":
