@@ -10,4 +10,5 @@ Test.py
 *.spec
 Run.exe
 PriconneUtils.exe
+PriconneUtilsPrivate.exe
 *.ico

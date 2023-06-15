@@ -1,6 +1,12 @@
-import os, requests, re, shutil, multiprocessing
-import Constants
+import os
+import re
+import shutil
+import multiprocessing
 from concurrent.futures import ThreadPoolExecutor
+
+import requests
+
+import Constants
 
 name = []
 hash = []
@@ -82,7 +88,7 @@ def convert_file(name: str):
 
 def check_file(fn, fd):
     for file in os.listdir(fd):
-        a = re.search(fn, file)
+        a: re.Match = re.search(fn, file)
         if a: 
             return a.group()
 

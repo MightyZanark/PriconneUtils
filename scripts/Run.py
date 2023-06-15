@@ -1,4 +1,5 @@
-import sys, multiprocessing
+import sys
+import multiprocessing
 from DBCheck import update_db
 from Movie import movie
 from Sound import sound

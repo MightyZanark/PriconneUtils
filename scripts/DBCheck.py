@@ -1,4 +1,8 @@
-import os, requests, json
+import os
+import json
+
+import requests
+
 import Constants
 
 # Function to update the db if there is one
@@ -63,7 +67,7 @@ def check_update():
         
         # Checks if the TruthVersion is the same as in the latest_ver.json
         if version == int(c["TruthVersion"]):
-            print('> Database version is up to date!')
+            print('> Database version is up to date!\n')
 
         else:
             print(f'New version available: [{version}], updating database...')

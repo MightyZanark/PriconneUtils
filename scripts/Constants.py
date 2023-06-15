@@ -1,4 +1,5 @@
-import os, re
+import os
+import re
 
 CUR_DIR = os.getcwd()
 
