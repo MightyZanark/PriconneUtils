@@ -123,17 +123,21 @@ def extract(usm: pcc.USM, dirname: str = "") -> list[str]:
             filenames.append(fname)
     
     for i, (k, data) in enumerate(usm.output.items()):
-        if "SFV" in k:
-            with open(filenames[i+1], "wb") as out:
-                out.write(data)
-        
-        elif "SFA" in k:
-            audio = pcc.ADX(data)
-            with open(filenames[i+1], "wb") as out:
-                out.write(audio.decode())
-        
-        else:
-            raise NotImplementedError(f'Unknown type of data: {k}\nHeader: {data[:4]}')
+        try:
+            if "SFV" in k:
+                with open(filenames[i+1], "wb") as out:
+                    out.write(data)
+            
+            elif "SFA" in k:
+                audio = pcc.ADX(data)
+                with open(filenames[i+1], "wb") as out:
+                    out.write(audio.decode())
+            
+            else:
+                raise NotImplementedError(f'Unknown type of data: {k}\nHeader: {data[:4]}')
+
+        except IndexError:
+            continue
         
     return filenames
 
