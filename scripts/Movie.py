@@ -60,9 +60,7 @@ def convert_file(name: str) -> None:
     try:
         name_mp4 = name.split(".")[0] + ".mp4"
         if not os.path.isfile(name_mp4):
-            usm_obj = pcc.USM(name)
-            usm_obj.demux()
-            filenames = extract(usm_obj, os.path.dirname(name))
+            filenames = extract(name, os.path.dirname(name))
             ffmpeg_combine = "ffmpeg -hide_banner -loglevel quiet -y "
             for fname in filenames[1:]:
                 ffmpeg_combine += f'-i {fname} '
@@ -72,7 +70,7 @@ def convert_file(name: str) -> None:
             subprocess.run(ffmpeg_combine, check=True)
 
             # Unlink the usm_obj so the usm file can be removed
-            del usm_obj
+            # del usm_obj
             for file in filenames:
                 os.remove(file)
     
@@ -89,7 +87,7 @@ def convert_file(name: str) -> None:
         print(f'An ERROR occured\n{traceback.format_exc()}')
 
 
-def extract(usm: pcc.USM, dirname: str = "") -> list[str]:
+def extract(filename: str, dirname: str = "") -> list[str]:
     """
     Slightly modified extract() function from PyCriCodecs's usm.py
     to accomodate Priconne's USM\n
@@ -97,8 +95,10 @@ def extract(usm: pcc.USM, dirname: str = "") -> list[str]:
     """
 
     # Gets a table consisting of video/audio metadata
+    usm = pcc.USM(filename)
+    usm.demux()
     table = usm.get_metadata()[0]["CRIUSF_DIR_STREAM"]
-    filenames = []
+    filenames: list[str] = []
     for obj in table:
         fname: str = obj["filename"][1]
 
@@ -122,6 +122,23 @@ def extract(usm: pcc.USM, dirname: str = "") -> list[str]:
         if fname not in filenames:
             filenames.append(fname)
     
+    keys = list(usm.output.keys())
+    while (idx := len(filenames[1:])) < len(usm.output.keys()):
+        fname: str = filenames[0].split(".")[0]
+        if "SFV" in keys[idx]:
+            fname += ".avi"
+
+        elif "SFA" in keys[idx]:
+            fname += ".wav"
+
+        else:
+            raise NotImplementedError(
+                f'Unknown type of data: {keys[idx]}\n'
+                f'Header: {list(usm.output.values())[idx][:4]}'
+            )
+        
+        filenames.append(fname)
+
     for i, (k, data) in enumerate(usm.output.items()):
         try:
             if "SFV" in k:
@@ -137,7 +154,11 @@ def extract(usm: pcc.USM, dirname: str = "") -> list[str]:
                 raise NotImplementedError(f'Unknown type of data: {k}\nHeader: {data[:4]}')
 
         except IndexError:
-            continue
+            print(
+                'Filenames amount < Expected output items\n'
+                f'Filenames = {filenames}\n'
+                f'Expected output = {list(usm.output.keys())}\n'
+            )
         
     return filenames
 
