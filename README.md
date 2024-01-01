@@ -41,10 +41,11 @@ If this still wasn't clear, you can contact me through Discord from [Priconne Un
 ## Building
 
 If you want to modify and build the program yourself, you will need:
-- [Python 3.9.6](https://www.python.org/downloads/)
+- [Python 3.9.6+](https://www.python.org/downloads/)
 - Requests
 - Pyinstaller
 - PyCriCodecs
+- tqdm (currently only for DBCheck progress bar)
 
 You can download and install the libraries by doing this command in your terminal
 ```

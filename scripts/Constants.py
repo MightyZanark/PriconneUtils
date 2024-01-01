@@ -51,11 +51,16 @@ SOUNDMANIFEST = os.path.join(DB_DIR, 'sound2manifest')
 BGM_DIR = os.path.join(SOUND_DIR, 'bgm')
 BGM_NAME = re.compile('bgm_.+\.(acb||awb)')
 
+VOICE_DIR = os.path.join(SOUND_DIR, 'voice')
+VOICE_NAME = re.compile('vo_.+\.(acb||awb)')
+
 SOUND_TYPES = {
     'dir': {
-        'bgm': BGM_DIR
+        'bgm': BGM_DIR,
+        'voice': VOICE_DIR,
     },
     'name': {
-        'bgm': BGM_NAME
+        'bgm': BGM_NAME,
+        'voice': VOICE_NAME,
     }
 }

@@ -8,12 +8,12 @@ import requests
 
 import Constants
 
-name = []
-hash = []
-
-def generate_list(snd_name, snd_dir):
+def generate_list(snd_name: str, snd_dir: str) -> tuple[list[str], list[str]]:
     if not os.path.isdir(snd_dir):
         os.makedirs(snd_dir)
+
+    name = []
+    hash = []
 
     with open(Constants.SOUNDMANIFEST, 'r') as f:
         for lines in f:
@@ -25,9 +25,11 @@ def generate_list(snd_name, snd_dir):
                 # print(f'Name is [{n}]')
                 name.append(os.path.join(snd_dir, n))
                 hash.append(h)
+    
+    return name, hash
 
 
-def download_file(name: str, hash):
+def download_file(name: str, hash: str):
     dirName = os.path.dirname(name)
     realFileName = os.path.basename(name)
     nameCheck = re.compile(f'{realFileName.split(".")[0]}.+?m4a')
@@ -53,7 +55,7 @@ def convert_file(name: str):
     nameCheck = re.compile(f'{realFilename.split(".")[0]}.+?m4a')
     checked = check_file(nameCheck, dir_name)
 
-    if checked is None:
+    if checked:
         # print(f'Name is {checked}')
         # print(f'Filename: {realFilename} | Checkfile: {check_file(nameCheck, dir_name)}')
         try:
@@ -75,9 +77,11 @@ def convert_file(name: str):
                     for waveFile in os.listdir(acbExternal):
                         m4aFile = f'{waveFile.split(".")[0]}.m4a'
                         print(f'Converting {waveFile} to {m4aFile}...')
-                        os.system('ffmpeg -hide_banner -loglevel quiet -y '
-                        f'-i "{os.path.abspath(os.path.join(acbExternal, waveFile))}" -vbr 5 -movflags faststart '
-                        f'"{os.path.abspath(os.path.join(dir_name, m4aFile))}"')
+                        os.system(
+                            'ffmpeg -hide_banner -loglevel quiet -y '
+                            f'-i "{os.path.abspath(os.path.join(acbExternal, waveFile))}" -vbr 5 -movflags faststart '
+                            f'"{os.path.abspath(os.path.join(dir_name, m4aFile))}"'
+                        )
             
                 shutil.rmtree(acbUnpackDir)
                 print(">>> Conversion done!")
@@ -86,27 +90,30 @@ def convert_file(name: str):
             print(f"An ERROR occured\n{e}")
 
 
-def check_file(fn, fd):
+def check_file(fn: str, fd: str) -> bool:
     for file in os.listdir(fd):
         a: re.Match = re.search(fn, file)
         if a: 
-            return a.group()
+            return True
+    
+    return False
 
-def sound():
+
+def sound() -> None:
     if not os.path.isfile(Constants.SOUNDMANIFEST):
         print("Please do DBCheck first before using this as the file needed to download stuff in this script is downloaded from DBCheck")
         input("Press ENTER to continue")
 
     else:
-        snd_type = input("Select sound type: bgm\n")
+        snd_type = input("Select sound type: bgm, voice\n")
 
         try:
             snd_name = Constants.SOUND_TYPES['name'][snd_type.strip()]
             snd_dir = Constants.SOUND_TYPES['dir'][snd_type.strip()]
-            generate_list(snd_name, snd_dir)
+            name, hash = generate_list(snd_name, snd_dir)
 
-        except:
-            print("> INVALID TYPE! <\nCurrent types are only 'bgm'\n")
+        except KeyError:
+            print("> INVALID TYPE! <\nCurrent types are only 'bgm' 'voice'\n")
             input("Press ENTER to continue")
 
         else:
@@ -120,8 +127,7 @@ def sound():
 
         finally:
             input(">> Download and conversion completed!\nPress ENTER to continue")
-            name.clear()
-            hash.clear()
 
-# if __name__ == '__main__':
-#     sound()
+
+if __name__ == '__main__':
+    sound()

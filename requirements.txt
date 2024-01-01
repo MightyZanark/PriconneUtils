@@ -1,3 +1,4 @@
 PyCriCodecs==0.3.0
 pyinstaller==5.1
 requests==2.26.0
+tqdm=4.66.1

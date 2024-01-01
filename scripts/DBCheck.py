@@ -1,12 +1,15 @@
 import os
 import json
+from typing import Any
 
 import requests
+from tqdm import tqdm
 
 import Constants
 
-# Function to update the db if there is one
-def update_db():
+def update_db() -> None:
+    """Updates the db if there is an update"""
+
     # Checks if database folder exist, if it doesn't then create one
     if not os.path.isdir(Constants.DB_DIR):
         os.mkdir(Constants.DB_DIR)
@@ -21,13 +24,15 @@ def update_db():
     download_manifest('movie')
     print(">> Update completed!")
 
-# Downloads .db and sound/movie manifest to use for L2D, BGM extraction, etc.
-def download_manifest(type):
+
+def download_manifest(type: str) -> None:
+    """Downloads db or manifest files"""
+
     with open(Constants.CONFIG_FILE, 'r') as f:
-        data = json.load(f)
-        t = str(data[type])
-        hash = data["hash"]
-        manifest_name = t.split("/")[-1]
+        data: dict[str, Any] = json.load(f)
+        t: str = data[type]
+        hash: str = data["hash"]
+        manifest_name: str = t.split("/")[-1]
         ver = str(data["TruthVersion"])
         
         if type == 'db':
@@ -35,7 +40,7 @@ def download_manifest(type):
             database = requests.get(f'{t}/{hash[:2]}/{hash}').content
             with open('master.cdb', 'wb') as cdb:
                 cdb.write(database)
-            os.system(f'Coneshell_call.exe -cdb master.cdb "{Constants.DB_DIR}\\master.db"')
+            os.system(f'Coneshell_call.exe -cdb master.cdb "{os.path.join(Constants.DB_DIR, "master.db")}"')
             os.remove('master.cdb')
             print("> Finished downloading database!\n")
 
@@ -44,29 +49,37 @@ def download_manifest(type):
             manifest = requests.get(t.replace('version', ver)).content
             with open(os.path.join(Constants.DB_DIR, manifest_name), 'wb') as m:
                 m.write(manifest)
-            print("> Download completed!\n")
+            print(f"> Finished downloading {manifest_name}!\n")
 
-# Function to check for DB updates and to update config.json if there is an update
+
 def check_update():
+    """Checks if there is an update and updates config.json"""
+
     with open(Constants.CONFIG_FILE, 'r+') as j:
-        c = json.load(j)
-        version = int(c["TruthVersion"])
-        assetmanifest = str(c["assetmanifest"])
+        c: dict[str, Any] = json.load(j)
+        version: int = c["TruthVersion"]
+        assetmanifest: str = c["assetmanifest"]
         i = 1
+        pbar = tqdm(total=Constants.MAX_TEST, leave=False)
 
         # While loop to check for new versions
         while i <= Constants.MAX_TEST:
             guess = version + (i * Constants.TEST_MULTIPLIER)
             r = requests.get(assetmanifest.replace('version', str(guess)))
             if r.status_code == 200:
+                pbar.close()
                 print(f'[{guess}] is a valid new version. Checking for more...')
                 version = guess
                 i = 1
+                pbar = tqdm(total=Constants.MAX_TEST, leave=False)
+            
             else:
                 i += 1
-        
-        # Checks if the TruthVersion is the same as in the latest_ver.json
-        if version == int(c["TruthVersion"]):
+                pbar.update(1)
+        pbar.close()
+
+        # Checks if the TruthVersion is the same as in config.json
+        if version == c["TruthVersion"]:
             print('> Database version is up to date!\n')
 
         else:
@@ -83,5 +96,5 @@ def check_update():
     # print('>> Update check completed!\n')
 
 
-# if __name__ == '__main__':
-#     update_db()
+if __name__ == '__main__':
+    update_db()

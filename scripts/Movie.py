@@ -175,6 +175,7 @@ def movie() -> None:
             "is downloaded from DBCheck"
         )
         input("Press ENTER to continue")
+        return
 
     else:
         print("Select type: (write the number)")
@@ -182,16 +183,17 @@ def movie() -> None:
         mov_type = input(">> ").lower().strip()
         
         try:
-            mov_dict = {1: "cutin", 2: "l2d", 3: "summon", 4: "event"}
-            mov_type = mov_dict[int(mov_type)]
+            mov_dict = {"1": "cutin", "2": "l2d", "3": "summon", "4": "event"}
+            mov_type = mov_dict[mov_type]
             dir_name = Constants.MOVIE_TYPES["dir"][mov_type]
             mov_name = Constants.MOVIE_TYPES["name"][mov_type]
             name, hash = generate_list(mov_name, dir_name)
 
-        except (KeyError, ValueError):
+        except KeyError:
             print("> INVALID TYPE! <")
             print("Current types are only 'cutin', 'l2d', 'summon', or 'event'\n")
             input("Press ENTER to continue")
+            return
     
         else:
             # ThreadPoolExecutor and multiprocessing makes it so the 
@@ -209,8 +211,6 @@ def movie() -> None:
                 pool.map(convert_file, name)
                 pool.terminate()
 
-        name.clear()
-        hash.clear()
         input(">> Download and conversion completed!\nPress ENTER to continue")
 
 
