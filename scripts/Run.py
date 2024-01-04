@@ -1,8 +1,8 @@
 import sys
 import multiprocessing
-from .DBCheck import update_db
-from .Movie import movie
-from .Sound import sound
+from DBCheck import update_db
+from Movie import movie
+from Sound import sound
 
 def run_main():
     print("\n---------- Priconne Utilities ----------\n")
