@@ -1,9 +1,9 @@
 {
- "TruthVersion": 10052800,
- "hash": "4aff7e78b0180b97790c81682f3215c8",
+ "TruthVersion": 10054800,
+ "hash": "733ff80375672c8f",
  "assetmanifest": "http://prd-priconne-redive.akamaized.net/dl/Resources/version/Jpn/AssetBundles/Windows/manifest/manifest_assetmanifest",
  "masterdata": "http://prd-priconne-redive.akamaized.net/dl/Resources/version/Jpn/AssetBundles/Windows/manifest/masterdata_assetmanifest",
- "movie": "http://prd-priconne-redive.akamaized.net/dl/Resources/version/Jpn/Movie/PC/High/manifest/moviemanifest",
- "sound": "http://prd-priconne-redive.akamaized.net/dl/Resources/version/Jpn/Sound/manifest/sound2manifest",
+ "movie": "http://prd-priconne-redive.akamaized.net/dl/Resources/version/Jpn/Movie/PC/High/manifest/movie2manifest",
+ "sound": "http://prd-priconne-redive.akamaized.net/dl/Resources/version/Jpn/Sound/manifest/soundmanifest",
  "db": "http://prd-priconne-redive.akamaized.net/dl/pool/AssetBundles"
 }

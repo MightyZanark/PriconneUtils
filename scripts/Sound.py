@@ -19,10 +19,9 @@ def generate_list(snd_name: str, snd_dir: str) -> tuple[list[str], list[str]]:
         for lines in f:
             l = lines.split(',')
             n = l[0].split('/')[-1]
-            h = l[1]
+            h = l[2]
 
             if re.fullmatch(snd_name, n):
-                # print(f'Name is [{n}]')
                 name.append(os.path.join(snd_dir, n))
                 hash.append(h)
     

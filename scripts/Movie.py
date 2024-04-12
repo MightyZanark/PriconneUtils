@@ -8,7 +8,6 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 import PyCriCodecs as pcc
-from tqdm import tqdm
 
 import Constants
 
@@ -18,15 +17,13 @@ def generate_list(mov_name: str, dir_name: str) -> tuple[list[str], list[str]]:
     Generates name and hash list for ThreadPoolExecutor and multiprocessing
     """
     
-    # print(f'mov_name: {mov_name} | dir_name: {dir_name} | isdir: {os.path.isdir(dir_name)}')
-    # print(mov_name)
     names = []
     hashes = []
     with open(Constants.MOVIEMANIFEST, "r") as m:
         for lines in m:
             l = lines.split(",")
             n = l[0].split("/")[-1]
-            h = l[1]
+            h = l[2]
 
             if re.fullmatch(mov_name, n):
                 names.append(os.path.join(dir_name, n))
@@ -55,15 +52,11 @@ def download_file(name: str, hash: str) -> None:
     Downloads all video files that doesn't exist yet
     """
 
-    # print(f'Filename is {name}')
     if not os.path.isfile(name) and not os.path.isfile(f'{name.split(".")[0]}.mp4'):
         print(f'Downloading [{os.path.basename(name)}]...')
         r = requests.get(f'{Constants.MOVIE_URL}/{hash[:2]}/{hash}').content
         with open(name, "wb") as usm:
             usm.write(r)
-
-    # else:
-    #     print(f'File [{os.path.basename(name)}] already exists')
 
 
 def convert_file(name: str) -> None:
@@ -83,8 +76,6 @@ def convert_file(name: str) -> None:
             print(f'Converting [{os.path.basename(name)}]...')
             subprocess.run(ffmpeg_combine, check=True)
 
-            # Unlink the usm_obj so the usm file can be removed
-            # del usm_obj
             for file in filenames:
                 os.remove(file)
     
@@ -224,60 +215,61 @@ def movie() -> None:
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)
 
-    if mov_type == 'event':
-        download_all(mov_name, dir_name)
+    # if mov_type == 'event':
+    download_all(mov_name, dir_name)
 
-    else:
-        select = input(f"Download all {mov_type}? (y/N, default: N)\n").strip().lower()
+    # Does not currently work because db is obfuscated
+    # else:
+    #     select = input(f"Download all {mov_type}? (y/N, default: N)\n").strip().lower()
 
-        if select and (select == 'y' or select[0] == 'y'):
-            download_all(mov_name, dir_name)
+    #     if select and (select == 'y' or select[0] == 'y'):
+    #         download_all(mov_name, dir_name)
 
-        else:
-            con = sqlite3.connect(os.path.join(Constants.DB_DIR, 'master.db'))
-            cur = con.cursor()
-            query = cur.execute(
-                            "SELECT unit_name, unit_id "
-                            "FROM unit_data "
-                            "WHERE unit_id < 190000 AND move_speed = 450 AND unit_id != 170101"
-                        ).fetchall()
-            names = [q[0].strip() for q in query]
-            ids = [q[1] for q in query]
-            name_lst = ''
-            for idx, name in enumerate(names, 1):
-                offset = 15 - len(name)
-                name += u'\u3000' * offset
-                idx_str = str(idx) + "."
-                name_lst += f"{idx_str:<4} {name}"
-                print(f"{idx_str:<4} {name}", end='')
-                if idx % 3 == 0:
-                    name_lst += '\n'
-                    print()
-            print()
+    #     else:
+    #         con = sqlite3.connect(os.path.join(Constants.DB_DIR, 'master.db'))
+    #         cur = con.cursor()
+    #         query = cur.execute(
+    #                         "SELECT unit_name, unit_id "
+    #                         "FROM unit_data "
+    #                         "WHERE unit_id < 190000 AND move_speed = 450 AND unit_id != 170101"
+    #                     ).fetchall()
+    #         names = [q[0].strip() for q in query]
+    #         ids = [q[1] for q in query]
+    #         name_lst = ''
+    #         for idx, name in enumerate(names, 1):
+    #             offset = 15 - len(name)
+    #             name += u'\u3000' * offset
+    #             idx_str = str(idx) + "."
+    #             name_lst += f"{idx_str:<4} {name}"
+    #             print(f"{idx_str:<4} {name}", end='')
+    #             if idx % 3 == 0:
+    #                 name_lst += '\n'
+    #                 print()
+    #         print()
 
-            correct = False
-            while not correct:
-                chara = input("Enter the character number: ").strip()
-                names_len = len(names)
-                while not chara.isdigit() or int(chara) < 1 or int(chara) > names_len:
-                    chara = input(f"Invalid number! Please enter a number between 1-{names_len}: ")
+    #         correct = False
+    #         while not correct:
+    #             chara = input("Enter the character number: ").strip()
+    #             names_len = len(names)
+    #             while not chara.isdigit() or int(chara) < 1 or int(chara) > names_len:
+    #                 chara = input(f"Invalid number! Please enter a number between 1-{names_len}: ")
                 
-                chara = int(chara)-1
-                name = names[chara]
-                id = ids[chara]
+    #             chara = int(chara)-1
+    #             name = names[chara]
+    #             id = ids[chara]
 
-                correct = input(f"Is {name} the right character? (y/N, default: y)\n").strip()
-                correct = True if correct != 'n' or correct[0] != 'n' else False
+    #             correct = input(f"Is {name} the right character? (y/N, default: y)\n").strip()
+    #             correct = True if correct != 'n' or correct[0] != 'n' else False
             
-            found = get_filename_and_hash(mov_name, str(id)[:-2])
-            if not found:
-                print(f"{name} does not have a {mov_type}")
+    #         found = get_filename_and_hash(mov_name, str(id)[:-2])
+    #         if not found:
+    #             print(f"{name} does not have a {mov_type}")
             
-            else:
-                name, hash = found
-                name = os.path.join(dir_name, name)
-                download_file(name, hash)
-                convert_file(name)
+    #         else:
+    #             name, hash = found
+    #             name = os.path.join(dir_name, name)
+    #             download_file(name, hash)
+    #             convert_file(name)
 
     input(">> Download and conversion completed!\nPress ENTER to continue")
 

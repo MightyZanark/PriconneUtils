@@ -3,7 +3,7 @@ import json
 from typing import Any
 
 import requests
-from tqdm import tqdm
+# from tqdm import tqdm
 
 import Constants
 
@@ -60,23 +60,23 @@ def check_update():
         version: int = c["TruthVersion"]
         assetmanifest: str = c["assetmanifest"]
         i = 1
-        pbar = tqdm(total=Constants.MAX_TEST, leave=False)
+        # pbar = tqdm(total=Constants.MAX_TEST, leave=False)
 
         # While loop to check for new versions
         while i <= Constants.MAX_TEST:
             guess = version + (i * Constants.TEST_MULTIPLIER)
             r = requests.get(assetmanifest.replace('version', str(guess)))
             if r.status_code == 200:
-                pbar.close()
+                # pbar.close()
                 print(f'[{guess}] is a valid new version. Checking for more...')
                 version = guess
                 i = 1
-                pbar = tqdm(total=Constants.MAX_TEST, leave=False)
+                # pbar = tqdm(total=Constants.MAX_TEST, leave=False)
             
             else:
                 i += 1
-                pbar.update(1)
-        pbar.close()
+                # pbar.update(1)
+        # pbar.close()
 
         # Checks if the TruthVersion is the same as in config.json
         if version == c["TruthVersion"]:
@@ -87,7 +87,7 @@ def check_update():
             # Updates config.json
             r = requests.get(str(c["masterdata"]).replace('version', str(version))).content
             l = str(r).split(',')
-            hash = l[1]
+            hash = l[2]
             c["TruthVersion"] = version
             c["hash"] = hash
             j.seek(0)

@@ -13,7 +13,7 @@ TEST_MULTIPLIER = 10
 # Movie constants
 MOVIE_URL = 'http://prd-priconne-redive.akamaized.net/dl/pool/Movie'
 MOVIE_DIR = os.path.join(CUR_DIR, 'movie')
-MOVIEMANIFEST = os.path.join(DB_DIR, 'moviemanifest')
+MOVIEMANIFEST = os.path.join(DB_DIR, 'movie2manifest')
 
 L2D_DIR = os.path.join(MOVIE_DIR, 'l2d')
 L2D_NAME = re.compile('character_\d+_000002\.usm')
@@ -46,7 +46,7 @@ MOVIE_TYPES = {
 # Sound constants
 SOUND_URL = 'http://prd-priconne-redive.akamaized.net/dl/pool/Sound'
 SOUND_DIR = os.path.join(CUR_DIR, 'sound')
-SOUNDMANIFEST = os.path.join(DB_DIR, 'sound2manifest')
+SOUNDMANIFEST = os.path.join(DB_DIR, 'soundmanifest')
 
 BGM_DIR = os.path.join(SOUND_DIR, 'bgm')
 BGM_NAME = re.compile('bgm_.+\.(acb||awb)')
