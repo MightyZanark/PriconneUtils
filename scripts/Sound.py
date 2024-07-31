@@ -34,7 +34,7 @@ def download_file(name: str, hash: str):
     nameCheck = re.compile(f'{realFileName.split(".")[0]}.+?m4a')
     checked = check_file(nameCheck, dirName)
 
-    if not os.path.isfile(name) and checked is None:
+    if not os.path.isfile(name) and checked is False:
         print(f'Downloading {name}...')
         r = requests.get(f'{Constants.SOUND_URL}/{hash[:2]}/{hash}').content
         with open(name, 'wb') as f:
